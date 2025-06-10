@@ -32,22 +32,14 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|min:3',
-            'description' => 'nullable',
-            'due_date' => 'nullable|date',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date' => 'nullable|date|after_or_equal:today',
         ]);
 
         Task::create($request->all());
 
         return redirect()->route('tasks.index')->with('success', '¡Tarea creada con éxito!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -64,9 +56,9 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         $request->validate([
-            'title' => 'required|min:3',
-            'description' => 'nullable',
-            'due_date' => 'nullable|date',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date' => 'nullable|date|after_or_equal:today',
         ]);
 
         $task->update($request->all());
@@ -81,5 +73,14 @@ class TaskController extends Controller
     {
         $task->delete();
         return redirect()->route('tasks.index')->with('success', '¡Tarea eliminada!');
+    }
+
+
+    public function toggleCompleted(Task $task)
+    {
+        $task->completed = !$task->completed;
+        $task->save();
+
+        return redirect()->route('tasks.index')->with('success', 'Tarea actualizada correctamente.');
     }
 }

@@ -9,13 +9,18 @@
 
 <body class="bg-light">
     <div class="container py-5">
-        <h1 class="mb-4 text-center">Gestor de Tareas</h1>
+        <div class="text-end mb-3">
+            <a href="{{ route('lang.switch', 'es') }}">🇪🇸 Español</a> |
+            <a href="{{ route('lang.switch', 'en') }}">🇬🇧 English</a>
+        </div>
 
-        @if (session('success'))
+        <h1 class="mb-4 text-center">{{ __('messages.app_name') }}</h1>
+
+        {{-- @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
-        @endif
+        @endif --}}
 
         @yield('content')
     </div>
