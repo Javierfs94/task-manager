@@ -18,9 +18,9 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all(); // Trae todas las tareas
-        return view('tasks.index', compact('tasks')); // Muestra la vista con las tareas
-
+        // $tasks = Task::all(); // Trae todas las tareas
+        $tasks = Task::where('user_id', auth()->id())->get();
+        return view('tasks.index', compact('tasks'));
     }
 
     /**
@@ -41,6 +41,9 @@ class TaskController extends Controller
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
         ]);
+
+        $validated['user_id'] = auth()->id();
+
 
         Task::create($request->all());
 
