@@ -36,7 +36,7 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
@@ -44,10 +44,9 @@ class TaskController extends Controller
 
         $validated['user_id'] = auth()->id();
 
+        Task::create($validated);
 
-        Task::create($request->all());
-
-        return redirect()->route('tasks.index')->with('success', '¡Tarea creada con éxito!');
+        return redirect()->route('tasks')->with('success', '¡Tarea creada con éxito!');
     }
 
     /**
@@ -71,7 +70,7 @@ class TaskController extends Controller
 
         $task->update($request->all());
 
-        return redirect()->route('tasks.index')->with('success', '¡Tarea actualizada!');
+        return redirect()->route('tasks')->with('success', '¡Tarea actualizada!');
     }
 
     /**
@@ -80,7 +79,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         $task->delete();
-        return redirect()->route('tasks.index')->with('success', '¡Tarea eliminada!');
+        return redirect()->route('tasks')->with('success', '¡Tarea eliminada!');
     }
 
 
@@ -89,6 +88,6 @@ class TaskController extends Controller
         $task->completed = !$task->completed;
         $task->save();
 
-        return redirect()->route('tasks.index')->with('success', 'Tarea actualizada correctamente.');
+        return redirect()->route('tasks')->with('success', 'Tarea actualizada correctamente.');
     }
 }

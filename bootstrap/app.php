@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(EncryptCookies::class);
         $middleware->append(\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class);
         $middleware->append(\Illuminate\Session\Middleware\StartSession::class);
+        $middleware->append(\Illuminate\View\Middleware\ShareErrorsFromSession::class);
+        $middleware->append(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
         $middleware->append(SetLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
