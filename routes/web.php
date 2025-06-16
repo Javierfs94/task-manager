@@ -4,13 +4,10 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', function () {
+    return redirect()->route('tasks.index');
+})->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -22,6 +19,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggleCompleted'])->name('tasks.toggle');
+    Route::get('/lang/{locale}', function ($locale) {
+        if (! in_array($locale, ['en', 'es'])) {
+            abort(400); // Idioma no permitido
+        }
+        session(['locale' => $locale]);
+        return redirect()->back();
+    })->name('lang.switch');
 });
 
 require __DIR__ . '/auth.php';
