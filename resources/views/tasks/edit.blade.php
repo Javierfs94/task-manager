@@ -19,7 +19,8 @@
         @method('PUT')
         <div class="mb-3">
             <label>Título</label>
-            <input type="text" name="title" value="{{ $task->title }}" class="form-control" value="{{ old('title') }}" required>
+            <input type="text" name="title" value="{{ $task->title }}" class="form-control" value="{{ old('title') }}"
+                required>
             @error('title')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
@@ -30,7 +31,8 @@
         </div>
         <div class="mb-3">
             <label>Fecha Límite</label>
-            <input type="datetime-local" name="due_date" value="{{ $task->due_date }}" class="form-control" value="{{ old('due_date') }}">
+            <input type="datetime-local" name="due_date" value="{{ $task->due_date }}" class="form-control"
+                value="{{ old('due_date') }}">
             @error('due_date')
                 <div style="color: red;">{{ $message }}</div>
             @enderror
@@ -40,6 +42,14 @@
             <select name="completed" class="form-control">
                 <option value="0" {{ !$task->completed ? 'selected' : '' }}>No</option>
                 <option value="1" {{ $task->completed ? 'selected' : '' }}>Sí</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Prioridad</label>
+            <select name="priority" class="form-control">
+                <option value="alta" {{ old('priority', $task->priority) == 'alta' ? 'selected' : '' }}>Alta</option>
+                <option value="media" {{ old('priority', $task->priority) == 'media' ? 'selected' : '' }}>Media</option>
+                <option value="baja" {{ old('priority', $task->priority) == 'baja' ? 'selected' : '' }}>Baja</option>
             </select>
         </div>
         <button class="btn btn-primary">Actualizar</button>

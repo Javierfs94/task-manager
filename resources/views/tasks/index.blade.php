@@ -34,6 +34,7 @@
                                     <th>Descripción</th>
                                     <th>Completada</th>
                                     <th>Fecha Límite</th>
+                                    <th>Prioridad</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -55,6 +56,26 @@
                                         </td>
                                         <td>{{ $task->due_date }}</td>
                                         <td>
+                                            @php
+                                                switch ($task->priority) {
+                                                    case 'alta':
+                                                        $class = 'badge bg-danger';
+                                                        break;
+                                                    case 'media':
+                                                        $class = 'badge bg-warning text-dark';
+                                                        break;
+                                                    case 'baja':
+                                                        $class = 'badge bg-success';
+                                                        break;
+                                                    default:
+                                                        $class = 'badge bg-secondary';
+                                                }
+                                            @endphp
+                                            <span class="{{ $class }}">
+                                                {{ ucfirst($task->priority) }}
+                                            </span>
+                                        </td>
+                                        <td>
                                             <a href="{{ route('tasks.edit', $task) }}"
                                                 class="btn btn-sm btn-warning">Editar</a>
                                             <form action="{{ route('tasks.destroy', $task) }}" method="POST"
@@ -67,6 +88,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                {{ $tasks->links() }}
                             </tbody>
                         </table>
                     @endif

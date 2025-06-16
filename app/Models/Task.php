@@ -10,7 +10,7 @@ class Task extends Model
     use HasFactory;
 
     // Campos que se pueden asignar masivamente
-    protected $fillable = ['title', 'description', 'due_date', 'completed', 'user_id'];
+    protected $fillable = ['title', 'description', 'due_date', 'completed', 'user_id', 'priority'];
 
 
     // app/Models/Task.php

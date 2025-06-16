@@ -19,7 +19,8 @@ class TaskController extends Controller
     public function index()
     {
         // $tasks = Task::all(); // Trae todas las tareas
-        $tasks = Task::where('user_id', auth()->id())->get();
+        // $tasks = Task::where('user_id', auth()->id())->get();
+        $tasks = Task::where('user_id', auth()->id())->orderByRaw("FIELD(priority, 'alta', 'media', 'baja')")->paginate(10);
         return view('tasks.index', compact('tasks'));
     }
 
@@ -40,6 +41,7 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
+            'priority' => 'required|in:alta,media,baja',
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -66,6 +68,7 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
+            'priority' => 'required|in:alta,media,baja',
         ]);
 
         $task->update($request->all());

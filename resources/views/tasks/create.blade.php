@@ -34,6 +34,14 @@
                 <div style="color: red;">{{ $message }}</div>
             @enderror
         </div>
+        <div class="form-group">
+            <label for="priority">Prioridad:</label>
+            <select name="priority" id="priority" class="form-control">
+                <option value="alta" {{ old('priority') == 'alta' ? 'selected' : '' }}>Alta</option>
+                <option value="media" {{ old('priority', 'media') == 'media' ? 'selected' : '' }}>Media</option>
+                <option value="baja" {{ old('priority') == 'baja' ? 'selected' : '' }}>Baja</option>
+            </select>
+        </div>
         <button class="btn btn-success">Guardar</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Volver</a>
     </form>
