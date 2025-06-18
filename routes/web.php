@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggleCompleted'])->name('tasks.toggle');
+    Route::get('/tasks/tag/{tag}', [TaskController::class, 'filterByTag'])->name('tasks.filterByTag');
     Route::get('/lang/{locale}', function ($locale) {
         if (! in_array($locale, ['en', 'es'])) {
             abort(400); // Idioma no permitido

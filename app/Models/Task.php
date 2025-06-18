@@ -12,10 +12,13 @@ class Task extends Model
     // Campos que se pueden asignar masivamente
     protected $fillable = ['title', 'description', 'due_date', 'completed', 'user_id', 'priority'];
 
-
-    // app/Models/Task.php
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

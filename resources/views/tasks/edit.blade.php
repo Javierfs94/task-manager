@@ -52,6 +52,17 @@
                 <option value="baja" {{ old('priority', $task->priority) == 'baja' ? 'selected' : '' }}>Baja</option>
             </select>
         </div>
+        <div class="mb-3">
+            <label>Etiquetas</label><br>
+            @foreach ($tags as $tag)
+                <label style="margin-right: 10px;">
+                    <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                        {{ in_array($tag->id, old('tags', $task->tags->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                    {{ $tag->name }}
+                </label>
+            @endforeach
+        </div>
+
         <button class="btn btn-primary">Actualizar</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Volver</a>
     </form>

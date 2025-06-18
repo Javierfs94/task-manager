@@ -42,6 +42,40 @@
                 <option value="baja" {{ old('priority') == 'baja' ? 'selected' : '' }}>Baja</option>
             </select>
         </div>
+
+        {{-- <div class="mb-3">
+            <label>Etiquetas</label>
+            <select name="tags[]" multiple class="form-control">
+                @foreach ($tags as $tag)
+                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                @endforeach
+            </select>
+
+        </div> --}}
+
+        {{-- <div class="mb-3">
+            <label>Etiquetas</label><br>
+            @foreach ($tags as $tag)
+                <label style="margin-right: 10px;">
+                    <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                        {{ in_array($tag->id, old('tags', $task->tags->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                    {{ $tag->name }}
+                </label>
+            @endforeach
+        </div> --}}
+
+        <div class="mb-3">
+            <label>Etiquetas</label><br>
+            @foreach ($tags as $tag)
+                <label style="margin-right: 10px;">
+                    <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
+                        {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
+                    {{ $tag->name }}
+                </label>
+            @endforeach
+        </div>
+
+
         <button class="btn btn-success">Guardar</button>
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Volver</a>
     </form>

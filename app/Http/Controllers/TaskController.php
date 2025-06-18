@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -13,23 +14,40 @@ class TaskController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Display all tasks.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        // $tasks = Task::all(); // Trae todas las tareas
-        // $tasks = Task::where('user_id', auth()->id())->get();
-        $tasks = Task::where('user_id', auth()->id())->orderByRaw("FIELD(priority, 'alta', 'media', 'baja')")->paginate(10);
-        return view('tasks.index', compact('tasks'));
+        $query = Task::where('user_id', auth()->id());
+
+        if ($request->has('tag')) {
+            $tagId = $request->get('tag');
+            $query->whereHas('tags', function ($q) use ($tagId) {
+                $q->where('tags.id', $tagId);
+            });
+        }
+
+        $tasks = $query->orderByRaw("FIELD(priority, 'alta', 'media', 'baja')")->paginate(10);
+        $tags = Tag::all();
+
+        return view('tasks.index', compact('tasks', 'tags'));
     }
+
 
     /**
      * Show the form for creating a new task.
      */
     public function create()
     {
-        return view('tasks.create');
+        $tags = Tag::all();
+        return view('tasks.create', compact('tags'));
+    }
+
+    /**
+     * Show the form for editing a specified task.
+     */
+    public function edit(Task $task)
+    {
+        $tags = Tag::all();
+        return view('tasks.edit', compact('task', 'tags'));
     }
 
     /**
@@ -42,21 +60,19 @@ class TaskController extends Controller
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
             'priority' => 'required|in:alta,media,baja',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         $validated['user_id'] = auth()->id();
+        $task = Task::create($validated);
 
-        Task::create($validated);
+        // Sincroniza etiquetas
+        if ($request->has('tags')) {
+            $task->tags()->sync($request->tags);
+        }
 
         return redirect()->route('tasks.index')->with('success', '¡Tarea creada con éxito!');
-    }
-
-    /**
-     * Show the form for editing a specified task.
-     */
-    public function edit(Task $task)
-    {
-        return view('tasks.edit', compact('task'));
     }
 
     /**
@@ -64,14 +80,21 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date|after_or_equal:today',
             'priority' => 'required|in:alta,media,baja',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
-        $task->update($request->all());
+        $task->update($validated);
+
+        // Sincroniza etiquetas
+        if ($request->has('tags')) {
+            $task->tags()->sync($request->tags);
+        }
 
         return redirect()->route('tasks.index')->with('success', '¡Tarea actualizada!');
     }
@@ -92,5 +115,11 @@ class TaskController extends Controller
         $task->save();
 
         return redirect()->route('tasks.index')->with('success', 'Tarea actualizada correctamente.');
+    }
+
+    public function filterByTag(Tag $tag)
+    {
+        $tasks = $tag->tasks()->where('user_id', auth()->id())->paginate(10);
+        return view('tasks.index', compact('tasks'));
     }
 }

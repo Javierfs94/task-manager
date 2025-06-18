@@ -35,6 +35,7 @@
                                     <th>Completada</th>
                                     <th>Fecha Límite</th>
                                     <th>Prioridad</th>
+                                    <th>Etiquetas</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,27 @@
                                                 {{ ucfirst($task->priority) }}
                                             </span>
                                         </td>
+
+                                        <td>
+                                            @foreach ($task->tags as $tag)
+                                                <span class="badge bg-secondary">{{ $tag->name }}</span>
+                                            @endforeach
+                                        </td>
+
+                                        <td>
+                                            <form method="GET" action="{{ route('tasks.index') }}">
+                                                <select name="tag" onchange="this.form.submit()">
+                                                    <option value="">-- Filtrar por etiqueta --</option>
+                                                    @foreach ($tags as $tag)
+                                                        <option value="{{ $tag->id }}"
+                                                            {{ request('tag') == $tag->id ? 'selected' : '' }}>
+                                                            {{ $tag->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </form>
+                                        </td>
+
                                         <td>
                                             <a href="{{ route('tasks.edit', $task) }}"
                                                 class="btn btn-sm btn-warning">Editar</a>
