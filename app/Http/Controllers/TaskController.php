@@ -120,6 +120,11 @@ class TaskController extends Controller
     public function filterByTag(Tag $tag)
     {
         $tasks = $tag->tasks()->where('user_id', auth()->id())->paginate(10);
-        return view('tasks.index', compact('tasks'));
+        $tags = Tag::all();
+
+        // Añadir 'tag' al request para que la vista lo detecte como id
+        request()->merge(['tag' => $tag->id]);
+
+        return view('tasks.index', compact('tasks', 'tags'));
     }
 }

@@ -22,6 +22,17 @@
 
                     <!-- Botón de crear -->
                     <a href="{{ route('tasks.create') }}" class="btn btn-primary mb-3">Crear Nueva Tarea</a>
+                    <div class="mb-3">
+                        <label>Filtrar por etiqueta:</label>
+                        @foreach ($tags as $tag)
+                            <a href="{{ route('tasks.filterByTag', $tag->id) }}" class="btn btn-sm btn-secondary"
+                                style="margin: 2px;">
+                                {{ $tag->name }}
+                            </a>
+                        @endforeach
+                        <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-primary" style="margin: 2px;">Mostrar
+                            todas</a>
+                    </div>
 
                     <!-- Listado de tareas -->
                     @if ($tasks->isEmpty())
@@ -86,7 +97,7 @@
                                         <td>
                                             <form method="GET" action="{{ route('tasks.index') }}">
                                                 <select name="tag" onchange="this.form.submit()">
-                                                    <option value="">-- Filtrar por etiqueta --</option>
+                                                    <option value="">-- Todas las etiquetas --</option>
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->id }}"
                                                             {{ request('tag') == $tag->id ? 'selected' : '' }}>
@@ -95,6 +106,7 @@
                                                     @endforeach
                                                 </select>
                                             </form>
+
                                         </td>
 
                                         <td>
