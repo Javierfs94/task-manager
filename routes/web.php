@@ -32,4 +32,11 @@ Route::middleware('auth')->group(function () {
     })->name('lang.switch');
 });
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return 'Bienvenido Admin';
+    });
+});
+
+
 require __DIR__ . '/auth.php';
