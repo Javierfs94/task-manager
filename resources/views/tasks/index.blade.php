@@ -20,8 +20,14 @@
                         </div>
                     @endif
 
-                    <!-- Botón de crear -->
+                    <!-- Botón crear nueva tarea -->
                     <a href="{{ route('tasks.create') }}" class="btn btn-primary mb-3">Crear Nueva Tarea</a>
+
+                    <!-- Botones de exportar -->
+                    <a href="{{ route('tasks.export.csv') }}" class="btn btn-sm btn-success mb-3 ms-2">Exportar CSV</a>
+                    <a href="{{ route('tasks.export.pdf') }}" class="btn btn-sm btn-danger mb-3 ms-2">Exportar PDF</a>
+
+                    <!-- Filtro de tareas -->
                     <div class="mb-3">
                         <label>Filtrar por etiqueta:</label>
                         @foreach ($tags as $tag)

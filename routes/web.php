@@ -21,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggleCompleted'])->name('tasks.toggle');
     Route::get('/tasks/tag/{tag}', [TaskController::class, 'filterByTag'])->name('tasks.filterByTag');
+    Route::get('/tasks/export/csv', [TaskController::class, 'exportCsv'])->name('tasks.export.csv');
+    Route::get('/tasks/export/pdf', [TaskController::class, 'exportPdf'])->name('tasks.export.pdf');
     Route::get('/lang/{locale}', function ($locale) {
         if (! in_array($locale, ['en', 'es'])) {
             abort(400); // Idioma no permitido

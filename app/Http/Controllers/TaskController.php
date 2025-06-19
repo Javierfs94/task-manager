@@ -6,6 +6,8 @@ use App\Models\Task;
 use App\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TaskController extends Controller
 {
@@ -108,7 +110,6 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', '¡Tarea eliminada!');
     }
 
-
     public function toggleCompleted(Task $task)
     {
         $task->completed = !$task->completed;
@@ -126,5 +127,43 @@ class TaskController extends Controller
         request()->merge(['tag' => $tag->id]);
 
         return view('tasks.index', compact('tasks', 'tags'));
+    }
+
+    public function exportCsv(): StreamedResponse
+    {
+        $tasks = Task::where('user_id', auth()->id())->get();
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=tasks.csv",
+        ];
+
+        $callback = function () use ($tasks) {
+            $handle = fopen('php://output', 'w');
+            // Encabezados CSV
+            fputcsv($handle, ['ID', 'Título', 'Descripción', 'Completada', 'Fecha Límite', 'Prioridad']);
+
+            foreach ($tasks as $task) {
+                fputcsv($handle, [
+                    $task->id,
+                    $task->title,
+                    $task->description,
+                    $task->completed ? 'Sí' : 'No',
+                    $task->due_date,
+                    $task->priority,
+                ]);
+            }
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportPdf()
+    {
+        $tasks = Task::where('user_id', auth()->id())->get();
+        $pdf = Pdf::loadView('tasks.exportpdf', compact('tasks'));
+
+        return $pdf->download('tasks.pdf');
     }
 }
